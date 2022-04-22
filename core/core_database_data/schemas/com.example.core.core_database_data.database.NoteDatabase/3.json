@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "e6507fbc025e859a9e5c3c5141a0f075",
+    "identityHash": "e7ad7f4228fec84ca7584230abe2f463",
     "entities": [
       {
         "tableName": "Notes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `note_title` TEXT NOT NULL, `note_description` TEXT NOT NULL, `note_date` TEXT NOT NULL, `color` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `note_title` TEXT NOT NULL, `note_description` TEXT NOT NULL, `note_date` TEXT NOT NULL, `note_primary_color` TEXT NOT NULL DEFAULT 'GREEN', `note_secondary_color` TEXT NOT NULL DEFAULT 'GREEN')",
         "fields": [
           {
             "fieldPath": "id",
@@ -33,10 +33,18 @@
             "notNull": true
           },
           {
-            "fieldPath": "color",
-            "columnName": "color",
+            "fieldPath": "colorPrimary",
+            "columnName": "note_primary_color",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "'GREEN'"
+          },
+          {
+            "fieldPath": "colorSecondary",
+            "columnName": "note_secondary_color",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'GREEN'"
           }
         ],
         "primaryKey": {
@@ -52,7 +60,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e6507fbc025e859a9e5c3c5141a0f075')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e7ad7f4228fec84ca7584230abe2f463')"
     ]
   }
 }

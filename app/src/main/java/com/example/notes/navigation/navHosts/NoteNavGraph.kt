@@ -1,16 +1,20 @@
 package com.example.notes.navigation.navHosts
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.navigation.*
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.example.core_utils.navigation.NoteConstants.NOTES_ROUTE
+import com.example.core_utils.navigation.NoteConstants.NOTE_ID_ARGUMENT
 import com.example.core_utils.navigation.NoteRoute
 import com.example.feature_note_add.NoteAddScreen
+import com.example.feature_notes_info.NoteInfoScreen
 import com.example.feature_notes_list.NotesListScreen
 import com.example.notes.di.AppComponent
 
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 fun NavGraphBuilder.notesListNavGraph(
     navController: NavController,
@@ -35,6 +39,23 @@ fun NavGraphBuilder.notesListNavGraph(
                     NoteAddScreen(
                         navController = navController,
                         noteAddViewModel = appComponent.noteAddViewModel()
+                    )
+                }
+            )
+            composable(
+                route = NoteRoute.NoteInfoScreen.route,
+                arguments = listOf(
+                    navArgument(
+                        name = NOTE_ID_ARGUMENT
+                    ){
+                        type = NavType.IntType
+                    }
+                ),
+                content = {
+                    NoteInfoScreen(
+                        noteInfoViewModel = appComponent.noteInfoViewModel(),
+                        navController = navController,
+                        idNote = it.arguments!!.getInt(NOTE_ID_ARGUMENT)
                     )
                 }
             )

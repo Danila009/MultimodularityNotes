@@ -51,6 +51,7 @@ dependencies {
     implementation project(':feature:feature_notes_info')
     implementation project(':feature:feature_note_add')
     implementation project(':core:core_utils')
+    implementation project(':core:core_ui')
     implementation project(":core:core_database_domain")
     implementation project(":core:core_database_data")
 

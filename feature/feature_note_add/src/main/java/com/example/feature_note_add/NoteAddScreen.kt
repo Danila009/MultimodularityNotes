@@ -1,5 +1,6 @@
 package com.example.feature_note_add
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
@@ -18,10 +19,12 @@ import com.example.core_ui.enum.ColorNote
 import com.example.core_ui.primaryBackground
 import com.example.core_ui.secondaryBackground
 import com.example.core_ui.secondaryText
-import com.example.core_utils.navigation.NoteRoute
 import com.example.feature_note_add.states.BottomDrawerStates
 import com.example.feature_note_add.view.BottomDrawerView
+import com.example.feature_note_add.view.dialog.DialogColorThemeNote
+import com.example.feature_note_add.view.dialog.DialogSaveChangesNoteAdd
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun NoteAddScreen(
@@ -30,19 +33,53 @@ fun NoteAddScreen(
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var colorNote by remember { mutableStateOf(ColorNote.RED) }
+    var colorSecondaryNote by remember { mutableStateOf(ColorNote.SECONDARY) }
+    var colorTextNote by remember { mutableStateOf(ColorNote.WHERE) }
+    var colorPrimaryNote by remember { mutableStateOf(ColorNote.PRIMARY) }
     val bottomDrawerStates = remember { mutableStateOf(BottomDrawerStates.SECONDARY) }
+    val dialogKeyboardArrowLeftNoteAddCheck = remember { mutableStateOf(false) }
+    val dialogColorThemCheck = remember { mutableStateOf(false) }
+    val drawerState = rememberBottomDrawerState(initialValue = BottomDrawerValue.Closed)
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = primaryBackground
+        color = colorPrimaryNote.color
     ) {
         BottomDrawerView(
+            drawerState = drawerState,
             colorNoteState = {
-                colorNote = enumValueOf(it)
-            },
-            bottomDrawerStates = bottomDrawerStates
+                when(bottomDrawerStates.value){
+                    BottomDrawerStates.SECONDARY -> {
+                        colorSecondaryNote = enumValueOf(it)
+                    }
+                    BottomDrawerStates.PRIMARY -> {
+                        colorPrimaryNote = enumValueOf(it)
+                    }
+                    BottomDrawerStates.TEXT -> {
+                        colorTextNote = enumValueOf(it)
+
+                    }
+                }
+            }
         ){
+            DialogSaveChangesNoteAdd(
+                noteAddViewModel = noteAddViewModel,
+                navController = navController,
+                boolean = dialogKeyboardArrowLeftNoteAddCheck,
+                title = title,
+                description = description,
+                colorNote = colorSecondaryNote.name
+            )
+
+            DialogColorThemeNote(
+                bottomDrawerStates = bottomDrawerStates,
+                boolean = dialogColorThemCheck,
+                colorPrimaryNote = colorPrimaryNote,
+                colorSecondaryNote = colorSecondaryNote,
+                colorTextNote = colorTextNote,
+                drawerState = drawerState
+            )
+
             Column {
                 Spacer(
                     modifier = Modifier
@@ -61,8 +98,8 @@ fun NoteAddScreen(
                                 bottom = 5.dp
                             )
                             .clip(AbsoluteRoundedCornerShape(10.dp))
-                            .background(secondaryBackground),
-                        onClick = { navController.navigate(NoteRoute.NoteListScreen.route) }
+                            .background(colorSecondaryNote.color),
+                        onClick = { dialogKeyboardArrowLeftNoteAddCheck.value = true }
                     ) {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowLeft,
@@ -71,34 +108,56 @@ fun NoteAddScreen(
                         )
                     }
 
-                    IconButton(
-                        modifier = Modifier
-                            .padding(
-                                end = 15.dp,
-                                top = 5.dp,
-                                bottom = 5.dp
-                            )
-                            .clip(AbsoluteRoundedCornerShape(10.dp))
-                            .background(secondaryBackground),
-                        onClick = {
-                            if (title.isNotEmpty() && description.isNotEmpty()){
-                                noteAddViewModel.insertNote(
-                                    note = Note(
-                                        id = 0,
-                                        title = title,
-                                        description = description,
-                                        date = noteAddViewModel.getCurrentTime(),
-                                        color = colorNote.name
-                                    ), navController = navController
+                    Row {
+                        IconButton(
+                            modifier = Modifier
+                                .padding(
+                                    end = 15.dp,
+                                    top = 5.dp,
+                                    bottom = 5.dp
                                 )
-                            }
+                                .clip(AbsoluteRoundedCornerShape(10.dp))
+                                .background(colorSecondaryNote.color),
+                            onClick = { dialogColorThemCheck.value = true }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.awesome),
+                                contentDescription = null,
+                                tint = Color.White
+                            )
                         }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.save),
-                            contentDescription = null,
-                            tint = Color.White
-                        )
+
+                        IconButton(
+                            modifier = Modifier
+                                .padding(
+                                    end = 15.dp,
+                                    top = 5.dp,
+                                    bottom = 5.dp
+                                )
+                                .clip(AbsoluteRoundedCornerShape(10.dp))
+                                .background(colorSecondaryNote.color),
+                            onClick = {
+                                if (title.isNotEmpty() && description.isNotEmpty()){
+                                    noteAddViewModel.insertNote(
+                                        note = Note(
+                                            id = 0,
+                                            title = title,
+                                            description = description,
+                                            date = noteAddViewModel.getCurrentTime(),
+                                            colorSecondary = colorSecondaryNote.name,
+                                            colorPrimary = colorPrimaryNote.name,
+                                            colorText = colorTextNote.name
+                                        ), navController = navController
+                                    )
+                                }
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.save),
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
 
@@ -110,10 +169,10 @@ fun NoteAddScreen(
                         .fillMaxWidth()
                         .padding(5.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        textColor = Color.White,
-                        backgroundColor = primaryBackground,
-                        cursorColor = Color.White,
-                        focusedIndicatorColor = primaryBackground
+                        textColor = colorTextNote.color,
+                        backgroundColor = colorPrimaryNote.color,
+                        cursorColor = colorTextNote.color,
+                        focusedIndicatorColor = colorPrimaryNote.color
                     )
                 )
 
@@ -125,10 +184,10 @@ fun NoteAddScreen(
                         .fillMaxSize()
                         .padding(5.dp),
                     colors = TextFieldDefaults.textFieldColors(
-                        textColor = Color.White,
-                        backgroundColor = primaryBackground,
-                        cursorColor = Color.White,
-                        focusedIndicatorColor = primaryBackground
+                        textColor = colorTextNote.color,
+                        backgroundColor = colorPrimaryNote.color,
+                        cursorColor = colorTextNote.color,
+                        focusedIndicatorColor = colorPrimaryNote.color
                     )
                 )
             }

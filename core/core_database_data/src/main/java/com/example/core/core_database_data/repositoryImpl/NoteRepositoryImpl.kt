@@ -1,5 +1,6 @@
 package com.example.core.core_database_data.repositoryImpl
 
+import android.util.Log
 import com.example.core.core_database_data.database.NoteDao
 import com.example.core.core_database_data.entities.NoteEntities
 import com.example.core.core_database_domain.entity.Note
@@ -19,7 +20,9 @@ class NoteRepositoryImpl @Inject constructor(
             title = note.title,
             description = note.description,
             date = note.date,
-            color = note.color
+            colorPrimary = note.colorPrimary,
+            colorSecondary = note.colorSecondary,
+            colorText = note.colorText
         )
         noteDao.insertNote(noteEntities)
     }
@@ -31,7 +34,9 @@ class NoteRepositoryImpl @Inject constructor(
                 title = note.title,
                 description = note.description,
                 date = note.date,
-                color = note.color
+                colorPrimary = note.colorPrimary,
+                colorSecondary = note.colorSecondary,
+                colorText = note.colorText
             )
             noteDao.deleteNote(noteEntities)
         }.collect()
@@ -43,7 +48,9 @@ class NoteRepositoryImpl @Inject constructor(
             title = note.title,
             description = note.description,
             date = note.date,
-            color = note.color
+            colorPrimary = note.colorPrimary,
+            colorSecondary = note.colorSecondary,
+            colorText = note.colorText
         )
         noteDao.updateNote(noteEntities)
     }
@@ -57,7 +64,9 @@ class NoteRepositoryImpl @Inject constructor(
                     date = noteEntity.date,
                     description = noteEntity.description,
                     title = noteEntity.title,
-                    color = noteEntity.color
+                    colorPrimary = noteEntity.colorPrimary,
+                    colorSecondary = noteEntity.colorSecondary,
+                    colorText = noteEntity.colorText
                 )
             }
         }
@@ -71,7 +80,9 @@ class NoteRepositoryImpl @Inject constructor(
                     title = response.title,
                     description = response.description,
                     date = response.date,
-                    color = response.color
+                    colorPrimary = response.colorPrimary,
+                    colorSecondary = response.colorSecondary,
+                    colorText = response.colorText
                 )
             }
     }

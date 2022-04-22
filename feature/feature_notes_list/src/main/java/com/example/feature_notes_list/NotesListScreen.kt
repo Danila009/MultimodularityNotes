@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -207,9 +208,14 @@ fun NotesListScreen(
                                                 .padding(
                                                     vertical = 5.dp,
                                                     horizontal = 10.dp
-                                                ),
+                                                )
+                                                .clickable {
+                                                    navController.navigate(NoteRoute.NoteInfoScreen.data(
+                                                        noteId = item.id
+                                                    ))
+                                                },
                                             shape = AbsoluteRoundedCornerShape(15.dp),
-                                            backgroundColor = enumValueOf<ColorNote>(item.color).color
+                                            backgroundColor = enumValueOf<ColorNote>(item.colorSecondary).color
                                         ) {
                                             Column {
                                                 Text(
@@ -217,7 +223,8 @@ fun NotesListScreen(
                                                     modifier = Modifier
                                                         .padding(5.dp)
                                                         .fillMaxWidth(),
-                                                    textAlign = TextAlign.Center
+                                                    textAlign = TextAlign.Center,
+                                                    color = enumValueOf<ColorNote>(item.colorText).color
                                                 )
 
                                                 Text(
@@ -225,7 +232,8 @@ fun NotesListScreen(
                                                     modifier = Modifier
                                                         .padding(5.dp)
                                                         .fillMaxWidth(),
-                                                    textAlign = TextAlign.End
+                                                    textAlign = TextAlign.End,
+                                                    color = enumValueOf<ColorNote>(item.colorText).color
                                                 )
                                             }
                                         }
