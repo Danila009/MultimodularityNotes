@@ -14,7 +14,10 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/core_database_data" />
             <option value="$PROJECT_DIR$/core/core_database_domain" />
+            <option value="$PROJECT_DIR$/core/core_ui" />
+            <option value="$PROJECT_DIR$/core/core_utils" />
             <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/feature_note_add" />
             <option value="$PROJECT_DIR$/feature/feature_notes_info" />
             <option value="$PROJECT_DIR$/feature/feature_notes_list" />
           </set>

@@ -49,6 +49,8 @@ android {
 dependencies {
     implementation project(":feature:feature_notes_list")
     implementation project(':feature:feature_notes_info')
+    implementation project(':feature:feature_note_add')
+    implementation project(':core:core_utils')
     implementation project(":core:core_database_domain")
     implementation project(":core:core_database_data")
 
@@ -71,4 +73,7 @@ dependencies {
     //Room
     implementation("androidx.room:room-ktx:2.4.2")
     kapt("androidx.room:room-compiler:2.4.2")
+
+    //Navigation
+    implementation("androidx.navigation:navigation-compose:2.4.2")
 }

@@ -35,6 +35,6 @@ class DatabaseModule {
         .databaseBuilder(
             context.applicationContext,
             NoteDatabase::class.java,
-            "note_database"
+            "notes_database"
         ).build()
 }

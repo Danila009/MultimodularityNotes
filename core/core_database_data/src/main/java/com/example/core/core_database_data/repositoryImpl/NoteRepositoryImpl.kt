@@ -4,9 +4,10 @@ import com.example.core.core_database_data.database.NoteDao
 import com.example.core.core_database_data.entities.NoteEntities
 import com.example.core.core_database_domain.entity.Note
 import com.example.core.core_database_domain.repository.NoteRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import java.util.ArrayList
 import javax.inject.Inject
 
 class NoteRepositoryImpl @Inject constructor(
@@ -17,7 +18,8 @@ class NoteRepositoryImpl @Inject constructor(
             id = note.id,
             title = note.title,
             description = note.description,
-            date = note.date
+            date = note.date,
+            color = note.color
         )
         noteDao.insertNote(noteEntities)
     }
@@ -28,7 +30,8 @@ class NoteRepositoryImpl @Inject constructor(
                 id = note.id,
                 title = note.title,
                 description = note.description,
-                date = note.date
+                date = note.date,
+                color = note.color
             )
             noteDao.deleteNote(noteEntities)
         }.collect()
@@ -39,39 +42,37 @@ class NoteRepositoryImpl @Inject constructor(
             id = note.id,
             title = note.title,
             description = note.description,
-            date = note.date
+            date = note.date,
+            color = note.color
         )
         noteDao.updateNote(noteEntities)
     }
 
-    override suspend fun realmAddNote(): List<Note> {
-        val notes = ArrayList<Note>()
-        val response = noteDao.realmAddNote()
-        response.onEach { result ->
-            result.forEach {  noteEntities ->
-                notes.add(
-                    Note(
-                        id = noteEntities.id,
-                        title = noteEntities.title,
-                        description = noteEntities.description,
-                        date = noteEntities.date
-                    )
+    override suspend fun realmAddNote(search:String): Flow<List<Note>> {
+        val response = noteDao.realmAddNote(search)
+        return response.map { value: List<NoteEntities> ->
+            value.map { noteEntity ->
+                Note(
+                    id = noteEntity.id,
+                    date = noteEntity.date,
+                    description = noteEntity.description,
+                    title = noteEntity.title,
+                    color = noteEntity.color
                 )
             }
-        }.collect()
-        return notes
+        }
     }
 
-    override suspend fun realmNote(id: Int): Note {
-        var note = Note()
-        noteDao.realmNote(id).onEach { response ->
-            note = Note(
-                id = response.id,
-                title = response.title,
-                description = response.description,
-                date = response.date
-            )
-        }.collect()
-        return note
+    override suspend fun realmNote(id: Int): Flow<Note> {
+        return noteDao.realmNote(id)
+            .map { response ->
+                Note(
+                    id = response.id,
+                    title = response.title,
+                    description = response.description,
+                    date = response.date,
+                    color = response.color
+                )
+            }
     }
 }
