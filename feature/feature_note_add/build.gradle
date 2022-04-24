@@ -40,6 +40,7 @@ dependencies {
     implementation project(":core:core_ui")
     implementation project(":core:core_utils")
     implementation project(":core:core_database_domain")
+    implementation project(":core:core_database_data")
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'

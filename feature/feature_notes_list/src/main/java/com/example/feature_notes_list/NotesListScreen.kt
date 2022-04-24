@@ -5,16 +5,16 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
@@ -22,10 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -40,9 +42,12 @@ import com.example.core_ui.primaryBackground
 import com.example.core_ui.secondaryBackground
 import com.example.core_utils.navigation.NoteRoute
 import com.example.feature_notes_list.states.SearchStates
+import com.example.feature_notes_list.view.DialogInfoNotes
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
+@ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -55,6 +60,7 @@ fun NotesListScreen(
     var searchStates by remember { mutableStateOf(SearchStates.CLOSE) }
     var search by remember { mutableStateOf("") }
     var notes:Response<List<Note>> by remember { mutableStateOf(Response.Loading()) }
+    val notesInfoDialogCheck = remember { mutableStateOf(false) }
 
     notesListViewModel.realmAddNote(search = search)
 
@@ -91,6 +97,13 @@ fun NotesListScreen(
                 modifier = Modifier.fillMaxSize(),
                 color = primaryBackground
             ) {
+                DialogInfoNotes(
+                    lifecycleScope = lifecycleScope,
+                    lifecycle = lifecycle,
+                    notesListViewModel = notesListViewModel,
+                    boolean = notesInfoDialogCheck
+                )
+
                 Column {
                     Spacer(
                         modifier = Modifier
@@ -143,7 +156,7 @@ fun NotesListScreen(
                                         )
                                         .clip(AbsoluteRoundedCornerShape(10.dp))
                                         .background(secondaryBackground),
-                                    onClick = { /*TODO*/ }
+                                    onClick = { notesInfoDialogCheck.value = true }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Info,
@@ -202,39 +215,93 @@ fun NotesListScreen(
                                     items(
                                         items = notes.data ?: emptyList()
                                     ) { item ->
-                                        Card(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(
-                                                    vertical = 5.dp,
-                                                    horizontal = 10.dp
-                                                )
-                                                .clickable {
-                                                    navController.navigate(NoteRoute.NoteInfoScreen.data(
-                                                        noteId = item.id
-                                                    ))
-                                                },
-                                            shape = AbsoluteRoundedCornerShape(15.dp),
-                                            backgroundColor = enumValueOf<ColorNote>(item.colorSecondary).color
-                                        ) {
-                                            Column {
-                                                Text(
-                                                    text = item.title,
-                                                    modifier = Modifier
-                                                        .padding(5.dp)
-                                                        .fillMaxWidth(),
-                                                    textAlign = TextAlign.Center,
-                                                    color = enumValueOf<ColorNote>(item.colorText).color
-                                                )
+                                        val squareSize = 70.dp
+                                        val swipeAbleState = rememberSwipeableState(initialValue = 0)
+                                        val sizePx = with(LocalDensity.current) { squareSize.toPx() }
+                                        val anchors = mapOf(0f to 0, sizePx to 1)
 
-                                                Text(
-                                                    text = item.date,
+                                        Column {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(
+                                                        vertical = 5.dp,
+                                                        horizontal = 10.dp
+                                                    )
+                                                    .clip(RoundedCornerShape(15.dp))
+                                                    .background(primaryBackground)
+                                                    .swipeable(
+                                                        state = swipeAbleState,
+                                                        anchors = anchors,
+                                                        thresholds = { _, _ ->
+                                                            FractionalThreshold(0.3f)
+                                                        },
+                                                        orientation = Orientation.Horizontal
+                                                    )
+                                            ) {
+                                                Column {
+                                                    Column(
+                                                        modifier = Modifier.padding(16.dp)
+                                                    ) {
+                                                        IconButton(
+                                                            onClick = {
+                                                                notesListViewModel.deleteNote(item.id)
+                                                            },
+                                                            modifier = Modifier
+                                                                .size(50.dp)
+                                                                .clip(CircleShape)
+                                                                .background(Color.Red)
+                                                        ) {
+                                                            Icon(
+                                                                Icons.Filled.Delete,
+                                                                contentDescription = null,
+                                                                tint = Color.White
+                                                            )
+                                                        }
+                                                    }
+                                                }
+
+                                                Card(
                                                     modifier = Modifier
-                                                        .padding(5.dp)
-                                                        .fillMaxWidth(),
-                                                    textAlign = TextAlign.End,
-                                                    color = enumValueOf<ColorNote>(item.colorText).color
-                                                )
+                                                        .offset {
+                                                            IntOffset(
+                                                                swipeAbleState.offset.value.roundToInt(),
+                                                                0
+                                                            )
+                                                        }
+                                                        .fillMaxWidth()
+                                                        .padding(
+                                                            vertical = 5.dp,
+                                                            horizontal = 10.dp
+                                                        )
+                                                        .clickable {
+                                                            navController.navigate(NoteRoute.NoteInfoScreen.data(
+                                                                noteId = item.id
+                                                            ))
+                                                        },
+                                                    shape = AbsoluteRoundedCornerShape(15.dp),
+                                                    backgroundColor = enumValueOf<ColorNote>(item.colorSecondary).color
+                                                ) {
+                                                    Column {
+                                                        Text(
+                                                            text = item.title,
+                                                            modifier = Modifier
+                                                                .padding(5.dp)
+                                                                .fillMaxWidth(),
+                                                            textAlign = TextAlign.Center,
+                                                            color = enumValueOf<ColorNote>(item.colorText).color
+                                                        )
+
+                                                        Text(
+                                                            text = item.date,
+                                                            modifier = Modifier
+                                                                .padding(5.dp)
+                                                                .fillMaxWidth(),
+                                                            textAlign = TextAlign.End,
+                                                            color = enumValueOf<ColorNote>(item.colorText).color
+                                                        )
+                                                    }
+                                                }
                                             }
                                         }
                                     }

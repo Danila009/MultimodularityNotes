@@ -16,8 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.core.core_database_domain.entity.Note
 import com.example.core_ui.enum.ColorNote
-import com.example.core_ui.primaryBackground
-import com.example.core_ui.secondaryBackground
 import com.example.core_ui.secondaryText
 import com.example.feature_note_add.states.BottomDrawerStates
 import com.example.feature_note_add.view.BottomDrawerView
@@ -68,7 +66,9 @@ fun NoteAddScreen(
                 boolean = dialogKeyboardArrowLeftNoteAddCheck,
                 title = title,
                 description = description,
-                colorNote = colorSecondaryNote.name
+                colorSecondary = colorSecondaryNote.name,
+                colorPrimary = colorPrimaryNote.name,
+                colorText = colorTextNote.name
             )
 
             DialogColorThemeNote(
@@ -137,19 +137,17 @@ fun NoteAddScreen(
                                 .clip(AbsoluteRoundedCornerShape(10.dp))
                                 .background(colorSecondaryNote.color),
                             onClick = {
-                                if (title.isNotEmpty() && description.isNotEmpty()){
-                                    noteAddViewModel.insertNote(
-                                        note = Note(
-                                            id = 0,
-                                            title = title,
-                                            description = description,
-                                            date = noteAddViewModel.getCurrentTime(),
-                                            colorSecondary = colorSecondaryNote.name,
-                                            colorPrimary = colorPrimaryNote.name,
-                                            colorText = colorTextNote.name
-                                        ), navController = navController
-                                    )
-                                }
+                                noteAddViewModel.insertNote(
+                                    note = Note(
+                                        id = 0,
+                                        title = title,
+                                        description = description,
+                                        date = noteAddViewModel.getCurrentTime(),
+                                        colorSecondary = colorSecondaryNote.name,
+                                        colorPrimary = colorPrimaryNote.name,
+                                        colorText = colorTextNote.name
+                                    ), navController = navController
+                                )
                             }
                         ) {
                             Icon(

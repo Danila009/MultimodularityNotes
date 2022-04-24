@@ -23,7 +23,11 @@ class NoteAddViewModel @Inject constructor(
             insertNoteUseCase(note)
                 .onEach {
                     if (it is Response.Success){
-                        navController.navigate(NoteRoute.NoteListScreen.route)
+                        navController.navigate(NoteRoute.NoteListScreen.route){
+                            popUpTo(NoteRoute.NoteListScreen.route){
+                                inclusive = true
+                            }
+                        }
                     }
                 }.collect()
         }

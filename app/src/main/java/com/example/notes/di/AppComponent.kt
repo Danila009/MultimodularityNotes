@@ -1,24 +1,23 @@
 package com.example.notes.di
 
 import android.content.Context
-import com.example.feature_note_add.NoteAddViewModel
+import com.example.core.core_database_data.database.NoteDao
+import com.example.feature_note_add.di.NoteAddDeps
+import com.example.feature_note_update.viewModel.NoteUpdateViewModel
 import com.example.feature_notes_info.viewModel.NoteInfoViewModel
 import com.example.feature_notes_list.NotesListViewModel
+import com.example.notes.di.scope.AppScope
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 
-@Component(
-    modules = [
-        DatabaseModule::class
-    ]
-)
-@Singleton
-interface AppComponent {
+@[AppScope Component(modules = [DatabaseModule::class])]
+interface AppComponent: NoteAddDeps {
+
+    override val noteDao:NoteDao
 
     fun noteListViewModel():NotesListViewModel
-    fun noteAddViewModel():NoteAddViewModel
     fun noteInfoViewModel():NoteInfoViewModel
+    fun noteUpdateViewModel():NoteUpdateViewModel
 
     @Component.Builder
     interface Builder{

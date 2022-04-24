@@ -14,5 +14,9 @@ enum class ColorNote(val color: Color) {
     YELLOW(color = Color(0xFFCEB90A)),
     BLUE(color = Color(0xFF08E4B0)),
     ORANGE(color = Color(0xFFFF8400)),
-    PURPLE(color = Color(0xFFB300FF))
+    PURPLE(color = Color(0xFFB300FF)),
+    LIGHT_RED(color = Color(0xFFFF9E9E)),
+    LIGHT_GREEN(color = Color(0xFF91F48F)),
+    LIGHT_YELLOW(color = Color(0xFFFFF599)),
+    LIGHT_PURPLE(color = Color(0xFFB69CFF))
 }

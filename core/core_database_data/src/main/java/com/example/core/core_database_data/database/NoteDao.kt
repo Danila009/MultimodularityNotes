@@ -14,13 +14,18 @@ interface NoteDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateNote(noteEntities: NoteEntities)
 
-    @Delete
-    suspend fun deleteNote(noteEntities: NoteEntities)
+    @Query("DELETE  FROM notes WHERE id = :id")
+    suspend fun deleteNote(id:Int)
 
     @Query("SELECT * FROM notes WHERE note_title LIKE '%' || :search || '%'")
     fun realmAddNote(search:String?):Flow<List<NoteEntities>>
 
     @Query("SELECT * FROM notes WHERE id = :id")
-    fun realmNote(id:Int):Flow<NoteEntities>
+    fun realmNoteFlow(id:Int):Flow<NoteEntities>
 
+    @Query("SELECT * FROM notes WHERE id = :id")
+    suspend fun realmNote(id: Int):NoteEntities
+
+    @Query("SELECT COUNT(id) FROM notes")
+    fun noteCount():Flow<Int>
 }

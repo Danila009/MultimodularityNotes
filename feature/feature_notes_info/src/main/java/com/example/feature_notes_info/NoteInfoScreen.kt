@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.*
 import androidx.navigation.NavController
-import com.example.core.core_database_domain.common.Response
 import com.example.core.core_database_domain.entity.Note
 import com.example.core_ui.enum.ColorNote
 import com.example.core_utils.navigation.NoteRoute
@@ -94,7 +93,9 @@ fun NoteInfoScreen(
                                 )
                                 .clip(AbsoluteRoundedCornerShape(10.dp))
                                 .background(enumValueOf<ColorNote>(note.colorSecondary).color),
-                            onClick = {  }
+                            onClick = { navController.navigate(NoteRoute.NoteUpdateScreen.data(
+                                noteId = note.id
+                            )) }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,

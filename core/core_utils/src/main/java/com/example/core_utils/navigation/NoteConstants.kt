@@ -13,4 +13,9 @@ sealed class NoteRoute(val route:String){
             noteId:Int
         ):String = "note_info_screen?noteId=$noteId"
     }
+    object NoteUpdateScreen: NoteRoute(route = "note_update_screen?noteId={noteId}"){
+        fun data(
+            noteId:Int
+        ):String = "note_update_screen?noteId=$noteId"
+    }
 }

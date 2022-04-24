@@ -6,6 +6,7 @@ import com.example.core.core_database_data.database.NoteDao
 import com.example.core.core_database_data.database.NoteDatabase
 import com.example.core.core_database_data.repositoryImpl.NoteRepositoryImpl
 import com.example.core.core_database_domain.repository.NoteRepository
+import com.example.notes.di.scope.AppScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -13,22 +14,19 @@ import javax.inject.Singleton
 @Module
 class DatabaseModule {
 
-    @Provides
-    @Singleton
+    @[Provides AppScope]
     fun providerNoteDao(
         noteDatabase: NoteDatabase
     ):NoteDao = noteDatabase.noteDao()
 
-    @Provides
-    @Singleton
+    @[Provides AppScope]
     fun providerNoteRepository(
         noteDao: NoteDao
     ):NoteRepository = NoteRepositoryImpl(
         noteDao = noteDao
     )
 
-    @Singleton
-    @Provides
+    @[Provides AppScope]
     fun providerNoteDatabase(
         context:Context
     ):NoteDatabase = Room

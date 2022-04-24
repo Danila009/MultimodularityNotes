@@ -1,14 +1,11 @@
 package com.example.core.core_database_data.repositoryImpl
 
-import android.util.Log
 import com.example.core.core_database_data.database.NoteDao
 import com.example.core.core_database_data.entities.NoteEntities
 import com.example.core.core_database_domain.entity.Note
 import com.example.core.core_database_domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class NoteRepositoryImpl @Inject constructor(
@@ -28,18 +25,7 @@ class NoteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteNote(id: Int) {
-        noteDao.realmNote(id).onEach { note ->
-            val noteEntities = NoteEntities(
-                id = note.id,
-                title = note.title,
-                description = note.description,
-                date = note.date,
-                colorPrimary = note.colorPrimary,
-                colorSecondary = note.colorSecondary,
-                colorText = note.colorText
-            )
-            noteDao.deleteNote(noteEntities)
-        }.collect()
+        noteDao.deleteNote(id)
     }
 
     override suspend fun updateNote(note: Note) {
@@ -72,8 +58,8 @@ class NoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun realmNote(id: Int): Flow<Note> {
-        return noteDao.realmNote(id)
+    override suspend fun realmFlowNote(id: Int): Flow<Note> {
+        return noteDao.realmNoteFlow(id)
             .map { response ->
                 Note(
                     id = response.id,
@@ -85,5 +71,22 @@ class NoteRepositoryImpl @Inject constructor(
                     colorText = response.colorText
                 )
             }
+    }
+
+    override suspend fun realmNote(id: Int): Note {
+        val response = noteDao.realmNote(id)
+        return Note(
+            id = response.id,
+            title = response.title,
+            description = response.description,
+            colorText = response.colorText,
+            colorPrimary = response.colorPrimary,
+            colorSecondary = response.colorSecondary,
+            date = response.date
+        )
+    }
+
+    override fun noteCount(): Flow<Int> {
+        return noteDao.noteCount()
     }
 }

@@ -12,5 +12,9 @@ interface NoteRepository {
 
     suspend fun realmAddNote(search:String):Flow<List<Note>>
 
-    suspend fun realmNote(id:Int):Flow<Note>
+    suspend fun realmFlowNote(id:Int):Flow<Note>
+
+    suspend fun realmNote(id: Int):Note
+
+    fun noteCount():Flow<Int>
 }

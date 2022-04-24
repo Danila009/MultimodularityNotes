@@ -9,6 +9,7 @@ import com.example.core_utils.navigation.NoteConstants.NOTES_ROUTE
 import com.example.core_utils.navigation.NoteConstants.NOTE_ID_ARGUMENT
 import com.example.core_utils.navigation.NoteRoute
 import com.example.feature_note_add.NoteAddScreen
+import com.example.feature_note_update.NoteUpdateScreen
 import com.example.feature_notes_info.NoteInfoScreen
 import com.example.feature_notes_list.NotesListScreen
 import com.example.notes.di.AppComponent
@@ -38,10 +39,14 @@ fun NavGraphBuilder.notesListNavGraph(
                 content = {
                     NoteAddScreen(
                         navController = navController,
-                        noteAddViewModel = appComponent.noteAddViewModel()
+                        noteAddViewModel = appComponent
+                            .noteAddComponent()
+                            .build()
+                            .noteAddViewModel()
                     )
                 }
             )
+
             composable(
                 route = NoteRoute.NoteInfoScreen.route,
                 arguments = listOf(
@@ -56,6 +61,24 @@ fun NavGraphBuilder.notesListNavGraph(
                         noteInfoViewModel = appComponent.noteInfoViewModel(),
                         navController = navController,
                         idNote = it.arguments!!.getInt(NOTE_ID_ARGUMENT)
+                    )
+                }
+            )
+
+            composable(
+                route = NoteRoute.NoteUpdateScreen.route,
+                arguments = listOf(
+                    navArgument(
+                        name = NOTE_ID_ARGUMENT
+                    ){
+                        type = NavType.IntType
+                    }
+                ),
+                content = {
+                    NoteUpdateScreen(
+                        noteUpdateViewModel = appComponent.noteUpdateViewModel(),
+                        navController = navController,
+                        noteId = it.arguments!!.getInt(NOTE_ID_ARGUMENT)
                     )
                 }
             )

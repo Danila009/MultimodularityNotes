@@ -14,5 +14,5 @@ data class NoteEntities(
     @ColumnInfo(name = "note_date") val date:String,
     @ColumnInfo(name = "note_primary_color", defaultValue = "GREEN") val colorPrimary: String,
     @ColumnInfo(name = "note_secondary_color", defaultValue = "GREEN") val colorSecondary: String,
-    @ColumnInfo(name = "note_text_color", defaultValue = "GREEN") val colorText: String
+    @ColumnInfo(name = "note_text_color", defaultValue = "GREEN") val colorText: String,
 )

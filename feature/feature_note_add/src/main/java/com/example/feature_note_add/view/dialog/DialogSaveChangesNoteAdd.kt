@@ -25,7 +25,9 @@ fun DialogSaveChangesNoteAdd(
     navController: NavController,
     title:String,
     description:String,
-    colorNote:String
+    colorSecondary:String,
+    colorPrimary:String,
+    colorText:String
 ) {
     if (boolean.value){
         AlertDialog(
@@ -96,20 +98,18 @@ fun DialogSaveChangesNoteAdd(
                             backgroundColor = Color(48,190,113)
                         ),
                         onClick = {
-                            if (title.isNotEmpty() && description.isNotEmpty()){
-                                boolean.value = false
-                                noteAddViewModel.insertNote(
-                                    note = Note(
-                                        id = 0,
-                                        title = title,
-                                        description = description,
-                                        date = noteAddViewModel.getCurrentTime(),
-                                        colorSecondary = colorNote,
-                                        colorPrimary = "RED",
-                                        colorText = "RED"
-                                    ), navController = navController
-                                )
-                            }
+                            boolean.value = false
+                            noteAddViewModel.insertNote(
+                                note = Note(
+                                    id = 0,
+                                    title = title,
+                                    description = description,
+                                    date = noteAddViewModel.getCurrentTime(),
+                                    colorSecondary = colorSecondary,
+                                    colorPrimary = colorPrimary,
+                                    colorText = colorText
+                                ), navController = navController
+                            )
                         }
                     ) {
                         Text(
