@@ -10,4 +10,9 @@ class AppApplication:Application() {
             .context(this)
             .build()
     }
+
+    override fun onCreate() {
+        super.onCreate()
+
+    }
 }

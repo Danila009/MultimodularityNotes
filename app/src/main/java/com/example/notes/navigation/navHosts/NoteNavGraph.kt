@@ -39,10 +39,7 @@ fun NavGraphBuilder.notesListNavGraph(
                 content = {
                     NoteAddScreen(
                         navController = navController,
-                        noteAddViewModel = appComponent
-                            .noteAddComponent()
-                            .build()
-                            .noteAddViewModel()
+                        noteAddViewModel = appComponent.noteAddViewModel()
                     )
                 }
             )

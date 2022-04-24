@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class NoteAddViewModel @Inject constructor(
+class NoteAddViewModel @Inject constructor (
     private val insertNoteUseCase: InsertNoteUseCase
 ):ViewModel() {
 
